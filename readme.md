@@ -1,6 +1,8 @@
 # 说明
 
 原版功能很好用，但对于除错找bug来说分析稍微少了，我加入了对log头的分析，以及专项过滤功能，更有便于debug除错。
+此版本需要.net framework 4.0以上支持。默认win8.1以上系统可以直接运行，以下系统需要手动升级.net framework到4.0以上。
+程序使用了dll资源加载的办法将原有的插件 ObjectListView/Nutt/Ultilities.dll打包进了exe中，实现了1个exe直接运行。
 
 使用方法：
 
