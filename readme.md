@@ -1,5 +1,8 @@
-# LogViewer
+# 说明
 
+原版功能很好用，但对于除错找bug来说分析稍微少了，我加入了对log头的分析，以及专项过滤功能，更有便于debug除错。
+
+# LogViewer
 LogViewer is designed to work with any large text files, so that even very large files can be opened, viewed and searched.
 
 It's original use case is for DFIR cases that involve log analysis. Whilst I use grep (well actually I use [sift](https://github.com/svent/sift) to extract data from logs, it is handy to be able to view log files, search for terms, hide lines whilst you get an idea what the log file contains, what actions are being performed.
