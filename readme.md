@@ -4,10 +4,9 @@
 
 使用方法：
 
- <img src="D:\Workspace\src\github\LogViewer\sample1.png" alt="sample1" style="zoom:25%;" />
+![](sample1.png)
 
- <img src="D:\Workspace\src\github\LogViewer\sample2.png" alt="sample2" style="zoom:25%;" /> 
-
+![](sample2.png)
 
 
 以下为原版介绍：
