@@ -2,6 +2,16 @@
 
 原版功能很好用，但对于除错找bug来说分析稍微少了，我加入了对log头的分析，以及专项过滤功能，更有便于debug除错。
 
+使用方法：
+
+ <img src="D:\Workspace\src\github\LogViewer\sample1.png" alt="sample1" style="zoom:25%;" />
+
+ <img src="D:\Workspace\src\github\LogViewer\sample2.png" alt="sample2" style="zoom:25%;" /> 
+
+
+
+以下为原版介绍：
+
 # LogViewer
 LogViewer is designed to work with any large text files, so that even very large files can be opened, viewed and searched.
 
