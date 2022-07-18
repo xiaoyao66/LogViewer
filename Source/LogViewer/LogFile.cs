@@ -17,12 +17,13 @@ namespace LogViewer
 {
     public class FilterRule
     {
+        public int NumContextLines = 0;
         public string Filter1 = null;
         public string Filter2 = null;
         public string Filter3 = null;
         public bool FilterOrAnd = true; // true='OR' false='AND'
         public string Module = null;
-        public DateTime Dt = DateTime.MinValue;
+        public TimeFilter Dt = TimeFilter.None;
         public int Pid = -1;
         public int Tid = -1;
         public int Seq = -1;
@@ -34,7 +35,7 @@ namespace LogViewer
                 Filter2 != null ||
                 Filter3 != null ||
                 Module != null ||
-                Dt != DateTime.MinValue ||
+                Dt != TimeFilter.None ||
                 Pid != -1 ||
                 Tid != -1 ||
                 Seq != -1 ||
@@ -77,7 +78,7 @@ namespace LogViewer
                 if (Seq != -1 && Seq > li.Seq) return false;
                 if (Module != null && Module != li.Module) return false;
                 if (Level > li.Level) return false;
-                if (Dt.Ticks != DateTime.MinValue.Ticks && Dt > li.Time) return false;
+                return Dt.CheckNow(li.Time);
             }
 
             return true;
@@ -220,8 +221,28 @@ namespace LogViewer
             else
             {
                 if (this.Items.Count > 0)
+                {
                     ll.Item = this.Items.Last();
+                    li = ll.Item;
+                }
+
                 Debug.Assert(s != null);
+            }
+
+            if (Filter != null)
+            {
+                if (Filter.CheckFilter(li, s)) ll.IsFilterLine = true;
+
+                int index = ll.LineNumber - Filter.NumContextLines;
+                index = (index >= 0 ? index : 0);
+                for (int i = index; i < ll.LineNumber; i++)
+                {
+                    if (Lines[i].IsFilterLine)
+                    {
+                        ll.IsContextFilter = true;
+                        break;
+                    }
+                }
             }
         }
 
@@ -732,7 +753,7 @@ namespace LogViewer
                         {
                             // Reset the match flag
                             ll.SearchMatches.Clear();
-                            //ll.IsContextLine = false;
+                            //ll.IsContextSearch = false;
 
                             ClearContextLine(ll.LineNumber, numContextLines);
                         }
@@ -1041,7 +1062,7 @@ namespace LogViewer
             {
                 e.Item.BackColor = filterColour;
             }
-            else if (((LogLine)e.Model).IsContextLine || ((LogLine)e.Model).IsContextFilter)
+            else if (((LogLine)e.Model).IsContextSearch || ((LogLine)e.Model).IsContextFilter)
             {
                 e.Item.BackColor = contextColour;
             }
@@ -1063,7 +1084,7 @@ namespace LogViewer
                 }
                 for (int index = 1; index <= temp; index++)
                 {
-                    info.Lines[(int)lineNumber + index].IsContextLine = true;
+                    info.Lines[(int)lineNumber + index].IsContextSearch = true;
                 }
             }
 
@@ -1076,7 +1097,7 @@ namespace LogViewer
                 }
                 for (int index = 1; index <= temp; index++)
                 {
-                    info.Lines[(int)lineNumber - index].IsContextLine = true;
+                    info.Lines[(int)lineNumber - index].IsContextSearch = true;
                 }
             }
         }
@@ -1121,7 +1142,7 @@ namespace LogViewer
         {
             if ((int)lineNumber + numLines + 1 < Lines.Count - 1)
             {
-                Lines[(int)lineNumber + numLines + 1].IsContextLine = false;
+                Lines[(int)lineNumber + numLines + 1].IsContextSearch = false;
             }
         }
         private void ClearContextFilter(LogItem li, int numLines)
@@ -1249,7 +1270,7 @@ namespace LogViewer
             if ((ViewMode & Global.ViewMode.FilterShow) != 0)
             {
                 result = ll.SearchMatches.Intersect(FilterIds).Any() ||
-                         ll.IsContextLine;
+                         ll.IsContextSearch;
             }
             else if ((ViewMode & Global.ViewMode.FilterHide) != 0)
             {

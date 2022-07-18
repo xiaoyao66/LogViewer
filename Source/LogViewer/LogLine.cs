@@ -40,7 +40,7 @@ namespace LogViewer
         public int CharCount { get; set; } = 0;
         public long Offset { get; set; } = 0;
         public List<ushort> SearchMatches { get; set; } = new List<ushort>();
-        public bool IsContextLine
+        public bool IsContextSearch
         {
             get => 0 != (Type & LogLineType.Context1);
             set => Type = value ? (Type | LogLineType.Context1) : (Type & ~LogLineType.Context1);
@@ -75,6 +75,51 @@ namespace LogViewer
         /// </summary>
         internal string Msg { get; set; } = null;
         #endregion
+    }
+
+    public struct TimeFilter
+    {
+        public TimeSpan ts;
+        TimeFilter(long l) { ts = new TimeSpan(l); }
+
+        public static readonly TimeFilter None = new TimeFilter(0);
+        public static readonly TimeFilter LastOneMinute = new TimeFilter(TimeSpan.TicksPerMinute);
+        public static readonly TimeFilter LastFiveMinute = new TimeFilter(TimeSpan.TicksPerMinute * 5);
+        public static readonly TimeFilter LastThirtyMinute = new TimeFilter(TimeSpan.TicksPerMinute * 30);
+        public static readonly TimeFilter LastOneHour = new TimeFilter(TimeSpan.TicksPerHour);
+        public static readonly TimeFilter LastOneDay = new TimeFilter(TimeSpan.TicksPerDay);
+
+        public bool CheckNow(DateTime dt)
+        {
+            if (this == None) return true;
+            return (DateTime.Now - dt) <= ts;
+        }
+
+        public override string ToString()
+        {
+            switch (ts.Ticks)
+            {
+                case 0:
+                    return "";
+                case TimeSpan.TicksPerMinute:
+                    return "Last one minite";
+                case TimeSpan.TicksPerMinute * 5:
+                    return "Last Five Minute";
+                case TimeSpan.TicksPerMinute * 30:
+                    return "Last Thirty Minute";
+                case TimeSpan.TicksPerHour:
+                    return "Last one hour";
+                case TimeSpan.TicksPerDay:
+                    return "Last one day";
+                default:
+                    return ts.ToString();
+            }
+        }
+
+        public override int GetHashCode() => ts.GetHashCode();
+        public override bool Equals(object obj) => (obj is TimeFilter tf) && (ts == tf.ts);
+        public static bool operator ==(TimeFilter a, object b) => a.Equals(b);
+        public static bool operator !=(TimeFilter a, object b) => !a.Equals(b);
     }
 
     public enum ItemLevel

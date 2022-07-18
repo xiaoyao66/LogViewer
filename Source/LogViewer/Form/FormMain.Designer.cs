@@ -1,4 +1,6 @@
-﻿namespace LogViewer
+﻿using System;
+
+namespace LogViewer
 {
     partial class FormMain
     {
@@ -433,8 +435,7 @@
             // dropdownTime
             // 
             this.dropdownTime.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.dropdownTime.Items.AddRange(new object[] {
-            "None"});
+            this.dropdownTime.Items.AddRange(new object[] {});
             this.dropdownTime.Name = "dropdownTime";
             this.dropdownTime.Size = new System.Drawing.Size(305, 38);
             // 

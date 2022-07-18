@@ -40,14 +40,22 @@ namespace LogViewer
         {
             InitializeComponent();
 
+            logs = new Dictionary<string, LogFile>();
+            dropdownTime.Items.AddRange(new object[] {
+                TimeFilter.None,
+                TimeFilter.LastOneMinute,
+                TimeFilter.LastFiveMinute,
+                TimeFilter.LastThirtyMinute,
+                TimeFilter.LastOneHour,
+                TimeFilter.LastOneDay
+            });
+
             synchronizationContext = SynchronizationContext.Current;
             dropdownSearchType.SelectedIndex = 0;
             dropdownSeq.SelectedIndex = 0;
             dropdownLevel.SelectedIndex = 0;
-            dropdownTime.SelectedIndex = 0;
             dropdownCodePage.SelectedIndex = 0;
-
-            logs = new Dictionary<string, LogFile>();
+            dropdownTime.SelectedIndex = 0;
         }
         #endregion
 
@@ -528,13 +536,14 @@ namespace LogViewer
         private FilterRule GetFilterRule()
         {
             FilterRule fr = new FilterRule();
+            fr.NumContextLines = config.NumContextLines;
             if (!string.IsNullOrWhiteSpace(dropdownFilter1.Text)) fr.Filter1 = dropdownFilter1.Text;
             if (!string.IsNullOrWhiteSpace(dropdownFilter2.Text)) fr.Filter2 = dropdownFilter2.Text;
             if (!string.IsNullOrWhiteSpace(dropdownFilter3.Text)) fr.Filter3 = dropdownFilter3.Text;
             fr.FilterOrAnd = toolButtonFilterType.Checked;
 
             if (!string.IsNullOrWhiteSpace(dropdownModule.Text)) fr.Module = dropdownModule.Text;
-            // DateTime Dt = DateTime.MinValue;
+            fr.Dt = (TimeFilter)(dropdownTime.SelectedItem ?? TimeFilter.None);
             if (!string.IsNullOrWhiteSpace(dropdownPid.Text) && int.TryParse(dropdownPid.Text, out int result))
                 fr.Pid = result;
             if (!string.IsNullOrWhiteSpace(dropdownTid.Text) && int.TryParse(dropdownTid.Text, out result))
@@ -560,17 +569,23 @@ namespace LogViewer
             dropdownTid.Items.Add("");
 
             if (lf.Pids.Count > 0) foreach (var item in lf.Pids) dropdownPid.Items.Add(item);
-            if (lf.Filter != null && lf.Filter.Pid != -1)
+            if (lf.Filter != null)
             {
-                var pid = lf.Filter.Pid;
-                var tid = lf.Filter.Tid;
-                if (pid != -1) dropdownPid.SelectedItem = pid;
-                if (lf.Tids[pid].Count > 0)
+                if (lf.Filter.Pid != -1)
                 {
-                    foreach (var item in lf.Tids[pid]) dropdownTid.Items.Add(item);
-                    if (tid != -1) dropdownTid.SelectedItem = tid;
+                    var pid = lf.Filter.Pid;
+                    var tid = lf.Filter.Tid;
+                    if (pid != -1) dropdownPid.SelectedItem = pid;
+                    if (lf.Tids[pid].Count > 0)
+                    {
+                        foreach (var item in lf.Tids[pid]) dropdownTid.Items.Add(item);
+                        if (tid != -1) dropdownTid.SelectedItem = tid;
+                    }
                 }
+
+                dropdownTime.SelectedItem = lf.Filter.Dt;
             }
+
 
             if (scroll && toolButtonAutoScroll.Checked && lf.List.Items.Count > 1)
             {
@@ -643,7 +658,7 @@ namespace LogViewer
             {
                 e.Item.BackColor = highlightColour;
             }
-            else if (((LogLine)e.Model).IsContextLine == true)
+            else if (((LogLine)e.Model).IsContextSearch == true)
             {
                 e.Item.BackColor = contextColour;
             }
