@@ -19,9 +19,12 @@
         /// </summary>
         public enum ViewMode
         {
-            Standard = 1,
-            FilterShow = 2,
-            FilterHide = 3
+            Standard = 0,
+            FilterShow = 1,
+            FilterShow2 = 2,
+            FilterHide = 4,
+            FilterShowShow = FilterShow | FilterShow2,
+            FilterHideShow = FilterHide | FilterShow2,
         }
         #endregion
     }

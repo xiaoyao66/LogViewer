@@ -3,6 +3,8 @@ using System.IO;
 using System.Drawing;
 using Nett;
 using woanware;
+using System.Collections.ObjectModel;
+using System.Reflection;
 
 namespace LogViewer
 {
@@ -16,7 +18,22 @@ namespace LogViewer
         public string ContextColour { get; set; } = "LightGray";
         public int MultiSelectLimit { get; set; } = 1000;
         public int NumContextLines { get; set; } = 0;
-        private const string FILENAME = "LogViewer.toml";
+        public int UpdateIntervalLocalDrive { get; set; } = 500;
+
+        public Collection<string> SFTP_URLs { get; set; } = new Collection<string>();
+
+        /// <summary>
+        /// aks. [8764-1236:9854] 2022-05-17 19:39:44.124 [WARN] - [Radar]xxxxxxxxx
+        /// </summary>
+        public string HeaderFormat { get; set; } = "[{0}-{1}:{2}] {3} {4} [{5}] - ";
+        public Collection<string> HeaderFormatKeys { get; set; } = new Collection<string>{
+            "pid", "tid", "seq", "time_format=yyyy-MM-dd", "time_formats=|HH:mm:ss.fff|HH:mm:ss", "level", "PARSER_END"};
+        public Collection<string> Modules { get; set; } = new Collection<string> { "Radar" };
+        public Collection<string> Filter1 { get; set; } = new Collection<string> { "\"ps_", "\"cmd_", "\"process_create\"" };
+        public Collection<string> Filter2 { get; set; } = new Collection<string>() { "FILTER", "MERGE", "RULESCTL"};
+        public Collection<string> Filter3 { get; set; } = new Collection<string>();
+
+        private const string FILENAME = "SysLogViewer.toml";
         #endregion
 
         #region Public Methods
@@ -34,10 +51,21 @@ namespace LogViewer
                 }
 
                 Configuration c = Toml.ReadFile<Configuration>(this.GetPath());
-                this.HighlightColour = c.HighlightColour;
-                this.ContextColour = c.ContextColour;
-                this.MultiSelectLimit = c.MultiSelectLimit;
-                this.NumContextLines = c.NumContextLines;
+                var t = c.GetType();
+                PropertyInfo[] props = c.GetType().GetProperties(BindingFlags.Public|BindingFlags.DeclaredOnly|BindingFlags.Instance);
+                foreach (var prop in props)
+                {
+                    if (prop.CanRead)
+                        prop.SetValue(this, prop.GetValue(c));
+                }
+                //this.HighlightColour = c.HighlightColour;
+                //this.ContextColour = c.ContextColour;
+                //this.MultiSelectLimit = c.MultiSelectLimit;
+                //this.NumContextLines = c.NumContextLines;
+                //this.Modules = c.Modules;
+                //this.Filter1 = c.Filter1;
+                //this.Filter2 = c.Filter2;
+                //this.Filter3 = c.Filter3;
 
                 if (this.MultiSelectLimit > 10000)
                 {
@@ -137,7 +165,10 @@ namespace LogViewer
         /// <returns></returns>
         private string GetPath()
         {
-            return System.IO.Path.Combine(Misc.GetApplicationDirectory(), FILENAME);
+            //string path = Misc.GetApplicationDirectory();
+            string path = System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
+            path = System.IO.Path.Combine(path, FILENAME);
+            return path;
         }
         #endregion
     }

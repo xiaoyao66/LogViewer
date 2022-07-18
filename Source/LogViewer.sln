@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32630.194
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogViewer", "LogViewer.csproj", "{7F6511EB-F0C3-4FA2-8E7E-917FDBB4B375}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SysLogViewer", "SysLogViewer.csproj", "{7F6511EB-F0C3-4FA2-8E7E-917FDBB4B375}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,5 +18,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D5E1E5C2-BB9F-4408-8D54-EB0CFFE66C99}
 	EndGlobalSection
 EndGlobal
