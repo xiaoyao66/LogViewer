@@ -133,6 +133,8 @@ namespace LogViewer
             this.Lines.Clear();
             this.LongestLine = new LogLine();
             this.LineCount = 0;
+            this.Pids.Clear();
+            this.Tids.Clear();
             this.fs.Dispose();
         }
         internal LogFileInfo(Stream _fs, string _headFormatSeed, Collection<string> _headerFormatKeys, Encoding enc)
@@ -152,8 +154,12 @@ namespace LogViewer
         public List<LogItem> Items { get; } = new List<LogItem>();
         public List<LogLine> Lines { get; } = new List<LogLine>();
 
-        public Collection<int> Pids { get; } = new Collection<int>();
-        public Collection<int> Tids { get; } = new Collection<int>();
+        public Collection<int> Pids { get; private set; } = new Collection<int>();
+        /// <summary>
+        /// key: process id
+        /// value: Collection with thread id
+        /// </summary>
+        public Dictionary<int, Collection<int>> Tids { get; private set; } = new Dictionary<int, Collection<int>>();
 
         public Stream PeekStream() => fs.PeekStream();
 
@@ -202,6 +208,13 @@ namespace LogViewer
                 }
                 li.LineNumberStart = ll.LineNumber;
                 ll.Item = li;
+                if (li.Pid != -1)
+                {
+                    if (!Pids.Contains(li.Pid)) Pids.Add(li.Pid);
+                    if (!Tids.ContainsKey(li.Pid)) Tids.Add(li.Pid, new Collection<int>());
+                    if (li.Tid != -1 && !Tids[li.Pid].Contains(li.Tid)) Tids[li.Pid].Add(li.Tid);
+                }
+
                 this.Items.Add(li);
             }
             else
@@ -274,6 +287,8 @@ namespace LogViewer
         public int FilterItemCount { get => info.FilterItemCount; set => info.FilterItemCount = value; }
         public List<LogLine> Lines { get => info.Lines; }
         public List<LogItem> Items { get => info.Items; }
+        public Collection<int> Pids { get => info.Pids; }
+        public Dictionary<int, Collection<int>> Tids { get => info.Tids; }
         public int LineCount { get => info.LineCount; }
         public LogLine LongestLine { get => info.LongestLine; }
         public string GetLine(int num) => info.GetLine(num);
@@ -288,7 +303,7 @@ namespace LogViewer
         public Stream FileStream { get; private set; } = null;
         public string FileName { get; private set; }
         public string FilePath { get; private set; }
-        public Stream PeekStream() {this.FileStream = null; return info.PeekStream();}
+        public Stream PeekStream() { this.FileStream = null; return info.PeekStream(); }
         public List<ushort> FilterIds { get; private set; } = new List<ushort>();
         public FastObjectListView List { get; set; }
         public string Guid { get; private set; }
@@ -312,18 +327,21 @@ namespace LogViewer
             string fName = FileName;
             Uri uri = Url;
             Stream fs = FileStream;
-    
+
             try
             {
-                if (fs != null && fs.CanSeek && fs.CanWrite) {
-                    lock (mutex) {
+                if (fs != null && fs.CanSeek && fs.CanWrite)
+                {
+                    lock (mutex)
+                    {
                         PeekStream();
                         fs.Seek(0, SeekOrigin.Begin);
                         fs.SetLength(0);
                     }
                     Dispose();
                 }
-                else if (!string.IsNullOrEmpty(fPath)) {
+                else if (!string.IsNullOrEmpty(fPath))
+                {
                     fs.Close();
                     fs = null;
                     Dispose();
@@ -359,11 +377,21 @@ namespace LogViewer
                 {
                     fs = FileStream;
                 }
-                else {
-                    fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete, 4096, FileOptions.RandomAccess);
+                else
+                {
+                    try
+                    {
+                        fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read | FileAccess.Write, FileShare.ReadWrite | FileShare.Delete, 4096, FileOptions.RandomAccess);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine(e.Message);
+                        fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete, 4096, FileOptions.RandomAccess);
+                    }
+
                     FileStream = fs;
                 }
-                
+
                 Enc = Tools.GetTxtCodePage(fs) ?? Enc;
                 this.info = new LogFileInfo(fs, headerFormat, headerFormatKeys, Enc);
                 position = 0;
@@ -450,7 +478,7 @@ namespace LogViewer
         }
 
         #region Public Methods
-        public void Load(Uri uri, Stream fs, SynchronizationContext st, CancellationToken ct)
+        public void Load(Uri uri, Stream fs, SynchronizationContext _, CancellationToken ct)
         {
             this.Dispose();
             this.FilePath = null;
@@ -493,7 +521,7 @@ namespace LogViewer
         /// </summary>
         /// <param name="filePath"></param>
         /// <param name="ct"></param>
-        public void Load(string filePath, SynchronizationContext st, CancellationToken ct)
+        public void Load(string filePath, SynchronizationContext _, CancellationToken ct)
         {
             this.Dispose();
             this.FilePath = filePath;
@@ -539,6 +567,7 @@ namespace LogViewer
             this.FileName = String.Empty;
             this.FilePath = String.Empty;
             this.FileStream?.Close();
+            this.FileStream = null;
             this.Url = null;
             this.FileStream = null;
             this.FilterIds = new List<ushort>();

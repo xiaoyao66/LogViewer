@@ -43,8 +43,6 @@ namespace LogViewer
             synchronizationContext = SynchronizationContext.Current;
             dropdownSearchType.SelectedIndex = 0;
             dropdownSeq.SelectedIndex = 0;
-            dropdownPid.SelectedIndex = 0;
-            dropdownTid.SelectedIndex = 0;
             dropdownLevel.SelectedIndex = 0;
             dropdownTime.SelectedIndex = 0;
             dropdownCodePage.SelectedIndex = 0;
@@ -537,12 +535,12 @@ namespace LogViewer
 
             if (!string.IsNullOrWhiteSpace(dropdownModule.Text)) fr.Module = dropdownModule.Text;
             // DateTime Dt = DateTime.MinValue;
-            if (!string.IsNullOrWhiteSpace(dropdownPid.Text) && long.TryParse(dropdownPid.Text, out long result))
-                fr.Pid = (int)result;
-            if (!string.IsNullOrWhiteSpace(dropdownTid.Text) && long.TryParse(dropdownTid.Text, out result))
-                fr.Tid = (int)result;
-            if (!string.IsNullOrWhiteSpace(dropdownSeq.Text) && long.TryParse(dropdownSeq.Text, out result))
-                fr.Seq = (int)result;
+            if (!string.IsNullOrWhiteSpace(dropdownPid.Text) && int.TryParse(dropdownPid.Text, out int result))
+                fr.Pid = result;
+            if (!string.IsNullOrWhiteSpace(dropdownTid.Text) && int.TryParse(dropdownTid.Text, out result))
+                fr.Tid = result;
+            if (!string.IsNullOrWhiteSpace(dropdownSeq.Text) && int.TryParse(dropdownSeq.Text, out result))
+                fr.Seq = result;
             if (!string.IsNullOrWhiteSpace(dropdownLevel.Text))
                 fr.Level = Tools.LevelToInt(dropdownLevel.Text);
 
@@ -555,6 +553,25 @@ namespace LogViewer
 
             toolTxtAllCount.Text = lf.Items.Count.ToString();
             toolTxtFiltered.Text = lf.FilterItemCount.ToString();
+
+            dropdownPid.Items.Clear();
+            dropdownTid.Items.Clear();
+            dropdownPid.Items.Add("");
+            dropdownTid.Items.Add("");
+
+            if (lf.Pids.Count > 0) foreach (var item in lf.Pids) dropdownPid.Items.Add(item);
+            if (lf.Filter != null && lf.Filter.Pid != -1)
+            {
+                var pid = lf.Filter.Pid;
+                var tid = lf.Filter.Tid;
+                if (pid != -1) dropdownPid.SelectedItem = pid;
+                if (lf.Tids[pid].Count > 0)
+                {
+                    foreach (var item in lf.Tids[pid]) dropdownTid.Items.Add(item);
+                    if (tid != -1) dropdownTid.SelectedItem = tid;
+                }
+            }
+
             if (scroll && toolButtonAutoScroll.Checked && lf.List.Items.Count > 1)
             {
                 lf.List.Items[lf.List.Items.Count - 1].EnsureVisible();
@@ -1011,7 +1028,7 @@ namespace LogViewer
             bool enableLineOps = true;
 
             LogFile lf = null;
-            if (tabControl.SelectedTab != null)
+            if (tabControl.TabPages.Count > 0 && tabControl.SelectedTab != null)
             {
                 lf = logs[tabControl.SelectedTab.Tag.ToString()];
             }
@@ -1270,6 +1287,7 @@ namespace LogViewer
         #endregion
 
         #region private functions
+
         private void saveWidgetTxtValue(ToolStripComboBox widget, Collection<string> txts)
         {
             string txt = widget.Text;
@@ -1279,13 +1297,45 @@ namespace LogViewer
                 widget.SelectedIndex = widget.Items.Add(txt);
             }
         }
-
-        private void saveWidgetTxtValue()
+        private void saveWidgetTxtValue(ToolStripComboBox widget, Collection<string> txts, out string save)
         {
-            saveWidgetTxtValue(dropdownModule, config.Modules);
-            saveWidgetTxtValue(dropdownFilter1, config.Filter1);
-            saveWidgetTxtValue(dropdownFilter2, config.Filter2);
-            saveWidgetTxtValue(dropdownFilter3, config.Filter3);
+            string txt = widget.Text;
+            if (!string.IsNullOrWhiteSpace(txt) && !txts.Contains(txt))
+            {
+                txts.Add(txt);
+                widget.SelectedIndex = widget.Items.Add(txt);
+                save = txt;
+            }
+            else { save = null; }
+        }
+        private void saveWidgetTxtValue(ToolStripComboBox widget, out int save)
+        {
+            string txt = widget.Text;
+            int val;
+            if (!string.IsNullOrWhiteSpace(txt) && int.TryParse(txt, out val))
+            {
+                save = val;
+            }
+            else { save = -1; }
+        }
+
+        private void saveWidgetTxtValue(FilterRule fr)
+        {
+            if (fr == null)
+            {
+                saveWidgetTxtValue(dropdownModule, config.Modules);
+                saveWidgetTxtValue(dropdownFilter1, config.Filter1);
+                saveWidgetTxtValue(dropdownFilter2, config.Filter2);
+                saveWidgetTxtValue(dropdownFilter3, config.Filter3);
+                return;
+            }
+
+            saveWidgetTxtValue(dropdownModule, config.Modules, out fr.Module);
+            saveWidgetTxtValue(dropdownFilter1, config.Filter1, out fr.Filter1);
+            saveWidgetTxtValue(dropdownFilter2, config.Filter2, out fr.Filter2);
+            saveWidgetTxtValue(dropdownFilter3, config.Filter3, out fr.Filter3);
+            saveWidgetTxtValue(dropdownPid, out fr.Pid);
+            saveWidgetTxtValue(dropdownTid, out fr.Tid);
         }
         #endregion private functions
 
@@ -1344,17 +1394,17 @@ namespace LogViewer
 
         private void toolButtonFilterApply_Click(object sender, EventArgs e)
         {
-            saveWidgetTxtValue();
-
-            if (tabControl.SelectedTab != null)
+            if (tabControl.TabPages.Count > 0 && tabControl.SelectedTab != null)
             {
                 LogFile lf = logs[tabControl.SelectedTab.Tag.ToString()];
                 var newF = GetFilterRule();
+                saveWidgetTxtValue(newF);
                 if (lf.Filter != newF)
                 {
                     FilterFile(newF);
                 }
             }
+            else { saveWidgetTxtValue(null); }
         }
 
         private void dropdownFilter1_SelectedIndexChanged(object sender, EventArgs e)
@@ -1367,7 +1417,7 @@ namespace LogViewer
             dropdownFilter1.Text = "";
             dropdownFilter2.Text = "";
             dropdownFilter3.Text = "";
-            if (tabControl.SelectedTab != null)
+            if (tabControl.TabPages.Count > 0 && tabControl.SelectedTab != null)
             {
                 LogFile lf = logs[tabControl.SelectedTab.Tag.ToString()];
                 if (lf.Filter != null)
@@ -1379,7 +1429,7 @@ namespace LogViewer
 
         private void toolStripButtonTruncation_Click(object sender, EventArgs e)
         {
-            if (tabControl.SelectedTab != null)
+            if (tabControl.TabPages.Count > 0 && tabControl.SelectedTab != null)
             {
                 LogFile lf = logs[tabControl.SelectedTab.Tag.ToString()];
                 try
@@ -1492,8 +1542,17 @@ namespace LogViewer
                 sftp = new Renci.SshNet.SftpClient(host, port, user, pass);
                 sftp.Connect();
             }
-
-            return (Stream)sftp.Open(fpath, FileMode.Open, FileAccess.Read);
+            Stream s = null;
+            try
+            {
+                s = (Stream)sftp.Open(fpath, FileMode.Open, FileAccess.ReadWrite);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                s = (Stream)sftp.Open(fpath, FileMode.Open, FileAccess.Read);
+            }
+            return s;
         }
 
         private void openSFTPToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1517,6 +1576,27 @@ namespace LogViewer
                     MessageBox.Show(ex.ToString());
                 }
                 finally { }
+            }
+        }
+
+        private void tabControl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            LogFile lf = null;
+            if (tabControl.TabPages.Count > 0 && tabControl.SelectedTab != null) lf = logs[tabControl.SelectedTab.Tag.ToString()];
+            RefreshView(lf, false);
+        }
+
+        private void dropdownPid_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            dropdownTid.Items.Clear();
+            if (tabControl.TabPages.Count > 0 && tabControl.SelectedTab != null)
+            {
+                LogFile lf = logs[tabControl.SelectedTab.Tag.ToString()];
+                int pid;
+                if (lf != null && int.TryParse(dropdownPid.Text, out pid))
+                {
+                    if (lf.Tids.ContainsKey(pid)) foreach (var item in lf.Tids[pid]) dropdownTid.Items.Add(item);
+                }
             }
         }
     }

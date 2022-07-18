@@ -34,6 +34,7 @@
             this.menuFile = new System.Windows.Forms.ToolStripMenuItem();
             this.menuFileOpen = new System.Windows.Forms.ToolStripMenuItem();
             this.menuFileOpenNewTab = new System.Windows.Forms.ToolStripMenuItem();
+            this.openSFTPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuFileSep1 = new System.Windows.Forms.ToolStripSeparator();
             this.menuFileClose = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
@@ -114,7 +115,6 @@
             this.contextLinesGoToFirstLine = new System.Windows.Forms.ToolStripMenuItem();
             this.contextLinesGoToLastLine = new System.Windows.Forms.ToolStripMenuItem();
             this.timerUpdate = new System.Windows.Forms.Timer(this.components);
-            this.openSFTPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.toolStrip.SuspendLayout();
@@ -137,7 +137,7 @@
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Padding = new System.Windows.Forms.Padding(7, 2, 0, 2);
             this.menuStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.menuStrip.Size = new System.Drawing.Size(1693, 37);
+            this.menuStrip.Size = new System.Drawing.Size(1693, 36);
             this.menuStrip.TabIndex = 1;
             // 
             // menuFile
@@ -151,45 +151,52 @@
             this.toolStripMenuItem3,
             this.menuFileExit});
             this.menuFile.Name = "menuFile";
-            this.menuFile.Size = new System.Drawing.Size(65, 33);
+            this.menuFile.Size = new System.Drawing.Size(65, 32);
             this.menuFile.Text = "&File";
             // 
             // menuFileOpen
             // 
             this.menuFileOpen.Enabled = false;
             this.menuFileOpen.Name = "menuFileOpen";
-            this.menuFileOpen.Size = new System.Drawing.Size(315, 40);
+            this.menuFileOpen.Size = new System.Drawing.Size(293, 40);
             this.menuFileOpen.Text = "&Open";
             this.menuFileOpen.Click += new System.EventHandler(this.menuFileOpen_Click);
             // 
             // menuFileOpenNewTab
             // 
             this.menuFileOpenNewTab.Name = "menuFileOpenNewTab";
-            this.menuFileOpenNewTab.Size = new System.Drawing.Size(315, 40);
+            this.menuFileOpenNewTab.Size = new System.Drawing.Size(293, 40);
             this.menuFileOpenNewTab.Text = "Open (New Tab)";
             this.menuFileOpenNewTab.Click += new System.EventHandler(this.menuFileOpenNewTab_Click);
+            // 
+            // openSFTPToolStripMenuItem
+            // 
+            this.openSFTPToolStripMenuItem.Name = "openSFTPToolStripMenuItem";
+            this.openSFTPToolStripMenuItem.Size = new System.Drawing.Size(293, 40);
+            this.openSFTPToolStripMenuItem.Text = "Open SFTP";
+            this.openSFTPToolStripMenuItem.Click += new System.EventHandler(this.openSFTPToolStripMenuItem_Click);
             // 
             // menuFileSep1
             // 
             this.menuFileSep1.Name = "menuFileSep1";
-            this.menuFileSep1.Size = new System.Drawing.Size(312, 6);
+            this.menuFileSep1.Size = new System.Drawing.Size(290, 6);
             // 
             // menuFileClose
             // 
             this.menuFileClose.Name = "menuFileClose";
-            this.menuFileClose.Size = new System.Drawing.Size(315, 40);
+            this.menuFileClose.Size = new System.Drawing.Size(293, 40);
             this.menuFileClose.Text = "Close";
             this.menuFileClose.Click += new System.EventHandler(this.menuFileClose_Click);
             // 
             // toolStripMenuItem3
             // 
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(312, 6);
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(290, 6);
             // 
             // menuFileExit
             // 
             this.menuFileExit.Name = "menuFileExit";
-            this.menuFileExit.Size = new System.Drawing.Size(315, 40);
+            this.menuFileExit.Size = new System.Drawing.Size(293, 40);
             this.menuFileExit.Text = "&Exit";
             this.menuFileExit.Click += new System.EventHandler(this.menuFileExit_Click);
             // 
@@ -200,7 +207,7 @@
             this.toolStripMenuItem2,
             this.menuToolsConfiguration});
             this.menuTools.Name = "menuTools";
-            this.menuTools.Size = new System.Drawing.Size(84, 33);
+            this.menuTools.Size = new System.Drawing.Size(84, 32);
             this.menuTools.Text = "Tools";
             // 
             // menuToolsMultiStringSearch
@@ -230,7 +237,7 @@
             this.menuHelpSep1,
             this.menuHelpAbout});
             this.menuHelp.Name = "menuHelp";
-            this.menuHelp.Size = new System.Drawing.Size(77, 33);
+            this.menuHelp.Size = new System.Drawing.Size(77, 32);
             this.menuHelp.Text = "&Help";
             // 
             // menuHelpHelp
@@ -288,7 +295,7 @@
             this.toolButtonCumulative,
             this.toolStripSeparator1,
             this.toolButtonSearch});
-            this.toolStrip.Location = new System.Drawing.Point(0, 151);
+            this.toolStrip.Location = new System.Drawing.Point(0, 150);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.toolStrip.Size = new System.Drawing.Size(1693, 38);
@@ -398,6 +405,7 @@
             this.dropdownPid.MaxLength = 9;
             this.dropdownPid.Name = "dropdownPid";
             this.dropdownPid.Size = new System.Drawing.Size(105, 38);
+            this.dropdownPid.SelectedIndexChanged += new System.EventHandler(this.dropdownPid_SelectedIndexChanged);
             // 
             // dropdownTid
             // 
@@ -484,7 +492,7 @@
             this.toolLabelLevel,
             this.dropdownLevel,
             this.toolStripButtonTruncation});
-            this.toolStrip2.Location = new System.Drawing.Point(0, 113);
+            this.toolStrip2.Location = new System.Drawing.Point(0, 112);
             this.toolStrip2.Name = "toolStrip2";
             this.toolStrip2.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.toolStrip2.Size = new System.Drawing.Size(1693, 38);
@@ -553,7 +561,7 @@
             this.toolLabelCodePage,
             this.dropdownCodePage,
             this.toolButtonAutoScroll});
-            this.toolStrip3.Location = new System.Drawing.Point(0, 75);
+            this.toolStrip3.Location = new System.Drawing.Point(0, 74);
             this.toolStrip3.Name = "toolStrip3";
             this.toolStrip3.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.toolStrip3.Size = new System.Drawing.Size(1693, 38);
@@ -598,7 +606,7 @@
             this.toolButtonFilterType,
             this.toolButtonFilterApply,
             this.toolStripButtonClear});
-            this.toolStrip4.Location = new System.Drawing.Point(0, 37);
+            this.toolStrip4.Location = new System.Drawing.Point(0, 36);
             this.toolStrip4.Name = "toolStrip4";
             this.toolStrip4.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.toolStrip4.Size = new System.Drawing.Size(1693, 38);
@@ -641,10 +649,10 @@
             // 
             this.panelMain.Controls.Add(this.tabControl);
             this.panelMain.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelMain.Location = new System.Drawing.Point(0, 189);
+            this.panelMain.Location = new System.Drawing.Point(0, 188);
             this.panelMain.Margin = new System.Windows.Forms.Padding(4);
             this.panelMain.Name = "panelMain";
-            this.panelMain.Size = new System.Drawing.Size(1693, 737);
+            this.panelMain.Size = new System.Drawing.Size(1693, 738);
             this.panelMain.TabIndex = 5;
             // 
             // tabControl
@@ -654,8 +662,9 @@
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
             this.tabControl.ShowToolTips = true;
-            this.tabControl.Size = new System.Drawing.Size(1693, 737);
+            this.tabControl.Size = new System.Drawing.Size(1693, 738);
             this.tabControl.TabIndex = 1;
+            this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
             // 
             // contextMenu
             // 
@@ -730,14 +739,14 @@
             // contextMenuSearchViewTerms
             // 
             this.contextMenuSearchViewTerms.Name = "contextMenuSearchViewTerms";
-            this.contextMenuSearchViewTerms.Size = new System.Drawing.Size(315, 40);
+            this.contextMenuSearchViewTerms.Size = new System.Drawing.Size(246, 40);
             this.contextMenuSearchViewTerms.Text = "View Terms";
             this.contextMenuSearchViewTerms.Click += new System.EventHandler(this.contextMenuSearchViewTerms_Click);
             // 
             // toolStripMenuItem4
             // 
             this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(312, 6);
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(243, 6);
             // 
             // contextMenuSearchColour
             // 
@@ -745,7 +754,7 @@
             this.contextMenuSearchMatch,
             this.contextMenuSearchColourContext});
             this.contextMenuSearchColour.Name = "contextMenuSearchColour";
-            this.contextMenuSearchColour.Size = new System.Drawing.Size(315, 40);
+            this.contextMenuSearchColour.Size = new System.Drawing.Size(246, 40);
             this.contextMenuSearchColour.Text = "Colour";
             // 
             // contextMenuSearchMatch
@@ -779,14 +788,14 @@
             // contextMenuExportAll
             // 
             this.contextMenuExportAll.Name = "contextMenuExportAll";
-            this.contextMenuExportAll.Size = new System.Drawing.Size(315, 40);
+            this.contextMenuExportAll.Size = new System.Drawing.Size(215, 40);
             this.contextMenuExportAll.Text = "All";
             this.contextMenuExportAll.Click += new System.EventHandler(this.contextMenuExportAll_Click);
             // 
             // contextMenuExportSelected
             // 
             this.contextMenuExportSelected.Name = "contextMenuExportSelected";
-            this.contextMenuExportSelected.Size = new System.Drawing.Size(315, 40);
+            this.contextMenuExportSelected.Size = new System.Drawing.Size(215, 40);
             this.contextMenuExportSelected.Text = "Selected";
             this.contextMenuExportSelected.Click += new System.EventHandler(this.contextMenuExportSelected_Click);
             // 
@@ -820,21 +829,21 @@
             // contextLinesGoToLine
             // 
             this.contextLinesGoToLine.Name = "contextLinesGoToLine";
-            this.contextLinesGoToLine.Size = new System.Drawing.Size(315, 40);
+            this.contextLinesGoToLine.Size = new System.Drawing.Size(286, 40);
             this.contextLinesGoToLine.Text = "Go To Line";
             this.contextLinesGoToLine.Click += new System.EventHandler(this.contextLinesGoToLine_Click);
             // 
             // contextLinesGoToFirstLine
             // 
             this.contextLinesGoToFirstLine.Name = "contextLinesGoToFirstLine";
-            this.contextLinesGoToFirstLine.Size = new System.Drawing.Size(315, 40);
+            this.contextLinesGoToFirstLine.Size = new System.Drawing.Size(286, 40);
             this.contextLinesGoToFirstLine.Text = "Go To First Line";
             this.contextLinesGoToFirstLine.Click += new System.EventHandler(this.contextLinesGoToFirstLine_Click);
             // 
             // contextLinesGoToLastLine
             // 
             this.contextLinesGoToLastLine.Name = "contextLinesGoToLastLine";
-            this.contextLinesGoToLastLine.Size = new System.Drawing.Size(315, 40);
+            this.contextLinesGoToLastLine.Size = new System.Drawing.Size(286, 40);
             this.contextLinesGoToLastLine.Text = "Go To Last Line";
             this.contextLinesGoToLastLine.Click += new System.EventHandler(this.contextLinesGoToLastLine_Click);
             // 
@@ -842,13 +851,6 @@
             // 
             this.timerUpdate.Interval = 500;
             this.timerUpdate.Tick += new System.EventHandler(this.timerUpdate_Tick);
-            // 
-            // openSFTPToolStripMenuItem
-            // 
-            this.openSFTPToolStripMenuItem.Name = "openSFTPToolStripMenuItem";
-            this.openSFTPToolStripMenuItem.Size = new System.Drawing.Size(315, 40);
-            this.openSFTPToolStripMenuItem.Text = "Open SFTP";
-            this.openSFTPToolStripMenuItem.Click += new System.EventHandler(this.openSFTPToolStripMenuItem_Click);
             // 
             // FormMain
             // 
