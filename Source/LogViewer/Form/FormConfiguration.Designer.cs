@@ -34,6 +34,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonOK = new System.Windows.Forms.Button();
+            this.checkBoxSetEnv = new System.Windows.Forms.CheckBox();
+            this.checkBoxOpenFile = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // checkShowContextLines
@@ -83,7 +85,7 @@
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(304, 115);
+            this.buttonCancel.Location = new System.Drawing.Point(334, 201);
             this.buttonCancel.Margin = new System.Windows.Forms.Padding(4);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(147, 42);
@@ -95,7 +97,7 @@
             // buttonOK
             // 
             this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonOK.Location = new System.Drawing.Point(150, 115);
+            this.buttonOK.Location = new System.Drawing.Point(180, 201);
             this.buttonOK.Margin = new System.Windows.Forms.Padding(4);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(147, 42);
@@ -104,13 +106,37 @@
             this.buttonOK.UseVisualStyleBackColor = true;
             this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
             // 
+            // checkBoxSetEnv
+            // 
+            this.checkBoxSetEnv.AutoSize = true;
+            this.checkBoxSetEnv.Location = new System.Drawing.Point(20, 108);
+            this.checkBoxSetEnv.Name = "checkBoxSetEnv";
+            this.checkBoxSetEnv.Size = new System.Drawing.Size(322, 25);
+            this.checkBoxSetEnv.TabIndex = 5;
+            this.checkBoxSetEnv.Text = "Set App to Envirnment Path";
+            this.checkBoxSetEnv.UseVisualStyleBackColor = true;
+            this.checkBoxSetEnv.CheckedChanged += new System.EventHandler(this.checkBoxSetEnv_CheckedChanged);
+            // 
+            // checkBoxOpenFile
+            // 
+            this.checkBoxOpenFile.AutoSize = true;
+            this.checkBoxOpenFile.Location = new System.Drawing.Point(19, 149);
+            this.checkBoxOpenFile.Name = "checkBoxOpenFile";
+            this.checkBoxOpenFile.Size = new System.Drawing.Size(399, 25);
+            this.checkBoxOpenFile.TabIndex = 6;
+            this.checkBoxOpenFile.Text = "Set App default \'.log\' file open.";
+            this.checkBoxOpenFile.UseVisualStyleBackColor = true;
+            this.checkBoxOpenFile.CheckedChanged += new System.EventHandler(this.checkBoxOpenFile_CheckedChanged);
+            // 
             // FormConfiguration
             // 
             this.AcceptButton = this.buttonOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(466, 169);
+            this.ClientSize = new System.Drawing.Size(496, 255);
+            this.Controls.Add(this.checkBoxOpenFile);
+            this.Controls.Add(this.checkBoxSetEnv);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOK);
             this.Controls.Add(this.label1);
@@ -125,6 +151,7 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Configuration";
+            this.Load += new System.EventHandler(this.FormConfiguration_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -137,5 +164,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.Button buttonOK;
+        private System.Windows.Forms.CheckBox checkBoxSetEnv;
+        private System.Windows.Forms.CheckBox checkBoxOpenFile;
     }
 }

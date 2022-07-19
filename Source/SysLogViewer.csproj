@@ -74,6 +74,7 @@
     <Compile Include="LogViewer\Form\FormSFTPLoad.Designer.cs">
       <DependentUpon>FormSFTPLoad.cs</DependentUpon>
     </Compile>
+    <Compile Include="LogViewer\SystemConfig\SystemEnvironment.cs" />
     <Compile Include="Nett\ArrayExtensions.cs" />
     <Compile Include="Nett\Attributes\TomlIgnore.cs" />
     <Compile Include="Nett\Attributes\TomlMember.cs" />

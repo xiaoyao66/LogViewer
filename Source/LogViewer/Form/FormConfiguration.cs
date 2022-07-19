@@ -10,6 +10,7 @@ namespace LogViewer
     {
         #region Member Variables/Properties
         public Configuration Config { get; private set; }
+        public string AppPath = System.Windows.Forms.Application.ExecutablePath;
         #endregion
 
         #region Constructor
@@ -81,6 +82,51 @@ namespace LogViewer
             {
                 comboNumLines.Enabled = false;
             }
+        }
+
+        private void checkBoxSetEnv_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!loaded) return;
+
+            string dir = System.IO.Path.GetDirectoryName(AppPath);
+            if (checkBoxSetEnv.Checked)
+            {
+                SystemConfig.SysEnvironment.SetPath(dir);
+            }
+            else
+            {
+                SystemConfig.SysEnvironment.RemovePath(dir);
+            }
+        }
+
+        private void checkBoxOpenFile_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!loaded) return;
+            
+            if (checkBoxOpenFile.Checked)
+            {
+                if (SystemConfig.SetDefaultFileOpen.IsAdministrator())
+                    SystemConfig.SetDefaultFileOpen.SetFileOpenApp(".log", AppPath, AppPath);
+                else
+                {
+                    MessageBox.Show("Please reopen the App with right of administrators.");
+                    checkBoxOpenFile.Checked = false;
+                }
+            }
+            else
+            {
+
+            }
+        }
+
+        private bool loaded = false;
+
+        private void FormConfiguration_Load(object sender, EventArgs e)
+        {
+            string dir = System.IO.Path.GetDirectoryName(AppPath);
+            checkBoxSetEnv.Checked = SystemConfig.SysEnvironment.CheckPath(dir);
+            checkBoxOpenFile.Checked = SystemConfig.SetDefaultFileOpen.CheckFileOpenApp(".log", AppPath);
+            loaded = true;
         }
     }
 }

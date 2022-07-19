@@ -65,6 +65,8 @@ Optimization
 */
 namespace Renci.SshNet.Common
 {
+#pragma warning disable CS3021 // 由于程序集没有 CLSCompliant 特性，因此“BigInteger.CompareTo(ulong)”不需要 CLSCompliant 特性
+
     /// <summary>
     /// Represents an arbitrarily large signed integer.
     /// </summary>
@@ -81,7 +83,7 @@ namespace Renci.SshNet.Common
 
         private const ulong Base = 0x100000000;
         private const int Bias = 1075;
-        private const int DecimalSignMask = unchecked((int) 0x80000000);
+        private const int DecimalSignMask = unchecked((int)0x80000000);
 
         //LSB on [0]
         private readonly uint[] _data;
@@ -173,7 +175,7 @@ namespace Renci.SshNet.Common
         {
             var bytesArray = new byte[bitLength / 8 + (((bitLength % 8) > 0) ? 1 : 0)];
             CryptoAbstraction.GenerateRandom(bytesArray);
-            bytesArray[bytesArray.Length - 1] = (byte) (bytesArray[bytesArray.Length - 1] & 0x7F);   //  Ensure not a negative value 
+            bytesArray[bytesArray.Length - 1] = (byte)(bytesArray[bytesArray.Length - 1] & 0x7F);   //  Ensure not a negative value 
             return new BigInteger(bytesArray);
         }
 
@@ -199,12 +201,12 @@ namespace Renci.SshNet.Common
             else if (value > 0)
             {
                 _sign = 1;
-                _data = new[] {(uint) value};
+                _data = new[] { (uint)value };
             }
             else
             {
                 _sign = -1;
-                _data = new[] {(uint) -value};
+                _data = new[] { (uint)-value };
             }
         }
 
@@ -429,10 +431,10 @@ namespace Renci.SshNet.Common
                 var j = 0;
                 for (var i = 0; i < fullWords; ++i)
                 {
-                    _data[i] = (uint) value[j++] |
-                               (uint) (value[j++] << 8) |
-                               (uint) (value[j++] << 16) |
-                               (uint) (value[j++] << 24);
+                    _data[i] = (uint)value[j++] |
+                               (uint)(value[j++] << 8) |
+                               (uint)(value[j++] << 16) |
+                               (uint)(value[j++] << 24);
                 }
                 size = len & 0x3;
                 if (size > 0)
@@ -457,10 +459,10 @@ namespace Renci.SshNet.Common
 
                 for (var i = 0; i < fullWords; ++i)
                 {
-                    word = (uint) value[j++] |
-                           (uint) (value[j++] << 8) |
-                           (uint) (value[j++] << 16) |
-                           (uint) (value[j++] << 24);
+                    word = (uint)value[j++] |
+                           (uint)(value[j++] << 8) |
+                           (uint)(value[j++] << 16) |
+                           (uint)(value[j++] << 24);
 
                     sub = (ulong)word - borrow;
                     word = (uint)sub;
@@ -1209,7 +1211,7 @@ namespace Renci.SshNet.Common
             if (m < res.Length - 1)
                 Array.Resize(ref res, m + 1);
 
-            return new BigInteger((short) (left._sign*right._sign), res);
+            return new BigInteger((short)(left._sign * right._sign), res);
         }
 
         /// <summary>
@@ -2594,7 +2596,7 @@ namespace Renci.SshNet.Common
             if (fp != null)
             {
                 var typeNfi = typeof(NumberFormatInfo);
-                nfi = (NumberFormatInfo) fp.GetFormat(typeNfi);
+                nfi = (NumberFormatInfo)fp.GetFormat(typeNfi);
             }
             if (nfi == null)
                 nfi = NumberFormatInfo.CurrentInfo;
@@ -2973,7 +2975,7 @@ namespace Renci.SshNet.Common
                 exp = -exp;
 
             exc = null;
-            exponent = (int) exp;
+            exponent = (int)exp;
             pos = i;
             return true;
         }
@@ -4159,7 +4161,7 @@ namespace Renci.SshNet.Common
                     var qq = rr / vn[n - 1];
                     rr -= qq * vn[n - 1];
 
-                    for (;;)
+                    for (; ; )
                     {
                         // Estimate too big ?
                         //

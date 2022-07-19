@@ -84,6 +84,14 @@ namespace LogViewer
 
             menuFileOpen.Enabled = false;
             menuFileClose.Enabled = false;
+
+            if (System.Environment.GetCommandLineArgs().Length > 1)
+            {
+                string path = System.Environment.GetCommandLineArgs()[1];
+                if (System.IO.File.Exists(path)) {
+                    LoadFile(path, true);
+                }
+            }
         }
 
         /// <summary>
