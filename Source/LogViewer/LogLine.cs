@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace LogViewer
@@ -224,6 +225,42 @@ namespace LogViewer
         internal string HeaderFormat;
         internal Collection<string> HeaderFormatKeys;
         internal string[] ParseIndex;
+    }
+
+    public static class StringTab2Spaces
+    {
+        public static string ToTabified(this string input, int markerSpacing = 4)
+        => new string(tabEnumerable(input, markerSpacing).ToArray());
+
+
+        private static IEnumerable<char> tabEnumerable(
+            IEnumerable<char> input,
+            int markerSpacing)
+        {
+            var n = 0;
+            using (var e = input.GetEnumerator())
+                while (e.MoveNext())
+                {
+                    if (e.Current == '\t')
+                    {
+                        // at least one
+                        yield return ' ';
+                        n++;
+
+                        // then fill to next marker
+                        while (n % markerSpacing != 0)
+                        {
+                            yield return ' ';
+                            n++;
+                        }
+                    }
+                    else
+                    {
+                        yield return e.Current;
+                        n++;
+                    }
+                }
+        }
     }
 
     public static class Tools

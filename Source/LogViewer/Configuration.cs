@@ -14,6 +14,8 @@ namespace LogViewer
     public class Configuration
     {
         #region Member Variables
+
+        public int NumTabSpaces { get; set; } = 4;
         public string HighlightColour { get; set; } = "Lime";
         public string ContextColour { get; set; } = "LightGray";
         public int MultiSelectLimit { get; set; } = 1000;

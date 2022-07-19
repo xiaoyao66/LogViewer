@@ -200,6 +200,7 @@ namespace LogViewer
 
                 tabControl.TabPages.Add(lf.Initialise(uri.OriginalString));
                 lf.SetContextMenu(contextMenu);
+                lf.NumTabSpaces = config.NumTabSpaces;
                 lf.ViewMode = Global.ViewMode.Standard;
                 lf.ProgressUpdate += LogFile_LoadProgress;
                 lf.LoadComplete += LogFile_LoadComplete;
@@ -273,6 +274,7 @@ namespace LogViewer
 
                 tabControl.TabPages.Add(lf.Initialise(filePath));
                 lf.SetContextMenu(contextMenu);
+                lf.NumTabSpaces = config.NumTabSpaces;
                 lf.ViewMode = Global.ViewMode.Standard;
                 lf.ProgressUpdate += LogFile_LoadProgress;
                 lf.LoadComplete += LogFile_LoadComplete;

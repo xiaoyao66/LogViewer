@@ -328,6 +328,8 @@ namespace LogViewer
         public List<ushort> FilterIds { get; private set; } = new List<ushort>();
         public FastObjectListView List { get; set; }
         public string Guid { get; private set; }
+
+        public int NumTabSpaces { get; set; } = 4;
         #endregion
 
         /// <summary>
@@ -953,7 +955,6 @@ namespace LogViewer
         {
             OLVColumn colLineNumber = ((OLVColumn)(new OLVColumn()));
             OLVColumn colText = ((OLVColumn)(new OLVColumn()));
-
             colLineNumber.Text = "Line No.";
             colLineNumber.Width = 95;
             colText.Text = "Data";
@@ -975,7 +976,7 @@ namespace LogViewer
                     return "";
                 }
 
-                return (info.GetLine(((LogLine)x).LineNumber));
+                return StringTab2Spaces.ToTabified(info.GetLine(((LogLine)x).LineNumber), NumTabSpaces);
             };
 
             FastObjectListView lv = new FastObjectListView();
